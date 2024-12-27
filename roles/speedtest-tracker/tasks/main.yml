@@ -35,6 +35,8 @@
           traefik.http.routers.speedtest_tracker.tls.domains[0].main: "{{ ansible_nas_domain }}"
           traefik.http.routers.speedtest_tracker.tls.domains[0].sans: "*.{{ ansible_nas_domain }}"
           traefik.http.services.speedtest_tracker.loadbalancer.server.port: "80"
+          traefik.http.routers.speedtest_tracker.middlewares:  "{{ omit if speedtest_tracker_basic_auth is not defined else 'auth' }}"
+          traefik.http.middlewares.auth.basicauth.users: "{{ speedtest_tracker_basic_auth | default(omit) }}"
   when: speedtest_enabled is true
 
 - name: Stop Speedtest-Tracker
